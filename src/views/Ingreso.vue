@@ -34,7 +34,7 @@
 
 <script>
 import { firebase, auth, db } from "../firebase";
-import { mapMutations } from "vuex";
+import { mapMutations, mapActions } from "vuex";
 import router from "@/router";
 
 export default {
@@ -45,7 +45,8 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["nuevoUsuario"]),
+    ...mapMutations(['nuevoUsuario']),
+    ...mapActions(['setUsuario']),
     google() {
       console.log("google");
       const provider = new firebase.auth.GoogleAuthProvider();
@@ -63,24 +64,7 @@ export default {
         const result = await firebase.auth().signInWithPopup(provider);
         const user = result.user;
         console.log(user);
-
-        // Construir usuario
-        const usuario = {
-          nombre: user.displayName,
-          email: user.email,
-          uid: user.uid,
-          foto: user.photoURL
-        };
-
-        this.nuevoUsuario(usuario);
-
-        // Guardar en firestore
-        await db
-          .collection("usuarios")
-          .doc(usuario.uid)
-          .set(usuario);
-        console.log("usuario guardado en db");
-
+        this.setUsuario(user);
         router.push({ name: "home" });
       } catch (error) {
         console.log("error", error);

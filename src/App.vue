@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <Navbar></Navbar>
+    <Navbar v-if="usuario != ''"></Navbar>
     <v-content>
       <router-view></router-view>
     </v-content>
@@ -9,6 +9,7 @@
 
 <script>
 import Navbar from "../src/components/Navbar"
+import { mapState } from "vuex"
 
 export default {
   name: "App",
@@ -16,7 +17,9 @@ export default {
   components: {
     Navbar 
   },
-
+  computed: {
+    ...mapState(['usuario'])
+  },
   data: () => ({
     //
   })
